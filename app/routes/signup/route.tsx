@@ -7,10 +7,14 @@ import {
   redirect,
 } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
-import loginImage from "~/assets/login-image.webp";
 
+import loginImage from "~/assets/login-image.webp";
 import { Label } from "~/components/ui/label";
-import { validateEmail, validatePassword } from "~/utils/validations";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "~/utils/validations";
 import { useEffect, useRef } from "react";
 
 export const meta: MetaFunction = () => {
@@ -21,12 +25,24 @@ export async function action({ request }: ActionFunctionArgs) {
   const requestClone = request.clone();
 
   const form = await requestClone.formData();
+  const name = form.get("name");
   const email = form.get("email");
   const password = form.get("password");
+
+  if (!validateName(name)) {
+    return json({
+      errors: {
+        name: "Name is required",
+        email: "Invalid email",
+        password: null,
+      },
+    });
+  }
 
   if (!validateEmail(email)) {
     return json({
       errors: {
+        name: null,
         email: "Invalid email",
         password: null,
       },
@@ -36,6 +52,7 @@ export async function action({ request }: ActionFunctionArgs) {
   if (!validatePassword(password)) {
     return json({
       errors: {
+        name: null,
         email: null,
         password: "Password is required",
       },
@@ -47,26 +64,26 @@ export async function action({ request }: ActionFunctionArgs) {
   throw redirect(redirectTo);
 }
 
-export async function loader() {
-  return null;
-}
-
-export default function Login() {
+export default function SignUp() {
   const fetcher = useFetcher<typeof action>();
 
+  const nameRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
+  const nameError = fetcher.data?.errors?.name;
   const emailError = fetcher.data?.errors?.email;
   const passwordError = fetcher.data?.errors?.password;
 
   useEffect(() => {
-    if (emailError) {
+    if (nameError) {
+      nameRef?.current?.focus();
+    } else if (emailError) {
       emailRef?.current?.focus();
     } else if (passwordError) {
       passwordRef?.current?.focus();
     }
-  }, [emailError, passwordError]);
+  }, [nameError, emailError, passwordError]);
 
   return (
     <main className="flex h-screen items-center justify-center p-5">
@@ -74,7 +91,7 @@ export default function Login() {
         <div className="md:w-1/2 w-full space-y-10 overflow-y-auto p-10">
           <div className="space-y-1 text-center">
             <h1 className="text-3xl font-bold bg-red text-primary">
-              Sign In to bugbook
+              Sign Up to bugbook
             </h1>
             <p className="text-muted-foreground">
               A place where even{" "}
@@ -84,10 +101,25 @@ export default function Login() {
           <div className="space-y-5">
             <fetcher.Form className="space-y-5" method="POST">
               <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
                   // eslint-disable-next-line jsx-a11y/no-autofocus
                   autoFocus
+                  ref={nameRef}
+                  name="name"
+                  id="name"
+                  type="text"
+                  placeholder="Name"
+                  required
+                  autoComplete="name"
+                />
+                {nameError ? (
+                  <div className="text-red-700">{nameError}</div>
+                ) : null}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="email">Email</Label>
+                <Input
                   ref={emailRef}
                   name="email"
                   id="email"
@@ -120,15 +152,15 @@ export default function Login() {
                 className="w-full text-xl font-bold"
                 disabled={fetcher.state === "submitting"}
               >
-                Login
+                Sign Up
               </Button>
             </fetcher.Form>
             <Link
-              to="/signup"
+              to="/signin"
               prefetch="intent"
               className="block text-center hover:underline"
             >
-              Create a new Account? Sign Up
+              Already have an Account? Sign In
             </Link>
           </div>
         </div>
