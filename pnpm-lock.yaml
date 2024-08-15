@@ -38,6 +38,12 @@ importers:
       "@remix-run/serve":
         specifier: ^2.11.1
         version: 2.11.1(typescript@5.5.4)
+      "@vercel/analytics":
+        specifier: ^1.3.1
+        version: 1.3.1(react@18.3.1)
+      "@vercel/speed-insights":
+        specifier: ^1.0.12
+        version: 1.0.12(react@18.3.1)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -2694,6 +2700,46 @@ packages:
       {
         integrity: sha512-6YXeOEKYTA3UV+RC8DeAjFk+/okoNz/h88R+McnzA2zpaVqTR/Ep+vszkWYlGBcMNO7vEkqbq5nT/JMMvhi+tw==,
       }
+
+  "@vercel/analytics@1.3.1":
+    resolution:
+      {
+        integrity: sha512-xhSlYgAuJ6Q4WQGkzYTLmXwhYl39sWjoMA3nHxfkvG+WdBT25c563a7QhwwKivEOZtPJXifYHR1m2ihoisbWyA==,
+      }
+    peerDependencies:
+      next: ">= 13"
+      react: ^18 || ^19
+    peerDependenciesMeta:
+      next:
+        optional: true
+      react:
+        optional: true
+
+  "@vercel/speed-insights@1.0.12":
+    resolution:
+      {
+        integrity: sha512-ZGQ+a7bcfWJD2VYEp2R1LHvRAMyyaFBYytZXsfnbOMkeOvzGNVxUL7aVUvisIrTZjXTSsxG45DKX7yiw6nq2Jw==,
+      }
+    peerDependencies:
+      "@sveltejs/kit": ^1 || ^2
+      next: ">= 13"
+      react: ^18 || ^19
+      svelte: ^4
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      "@sveltejs/kit":
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   "@vite-pwa/assets-generator@0.2.4":
     resolution:
@@ -7159,6 +7205,12 @@ packages:
       }
     engines: { node: ">= 0.8.0" }
 
+  server-only@0.0.1:
+    resolution:
+      {
+        integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==,
+      }
+
   set-cookie-parser@2.7.0:
     resolution:
       {
@@ -10332,6 +10384,16 @@ snapshots:
 
   "@vanilla-extract/private@1.0.5": {}
 
+  "@vercel/analytics@1.3.1(react@18.3.1)":
+    dependencies:
+      server-only: 0.0.1
+    optionalDependencies:
+      react: 18.3.1
+
+  "@vercel/speed-insights@1.0.12(react@18.3.1)":
+    optionalDependencies:
+      react: 18.3.1
+
   "@vite-pwa/assets-generator@0.2.4":
     dependencies:
       cac: 6.7.14
@@ -13290,6 +13352,8 @@ snapshots:
       send: 0.18.0
     transitivePeerDependencies:
       - supports-color
+
+  server-only@0.0.1: {}
 
   set-cookie-parser@2.7.0: {}
 
