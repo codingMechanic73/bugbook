@@ -16,6 +16,8 @@ import {
   validatePassword,
 } from "~/utils/validations";
 import { useEffect, useRef } from "react";
+import { createUser } from "~/models/user.server";
+import { AuthorizationError } from "remix-auth";
 
 export const meta: MetaFunction = () => {
   return [{ title: "bugbook" }, { name: "description", content: "bugbook!" }];
@@ -30,38 +32,83 @@ export async function action({ request }: ActionFunctionArgs) {
   const password = form.get("password");
 
   if (!validateName(name)) {
-    return json({
-      errors: {
-        name: "Name is required",
-        email: "Invalid email",
-        password: null,
+    return json(
+      {
+        errors: {
+          name: "Name is required",
+          email: "Invalid email",
+          password: null,
+        },
       },
-    });
+      {
+        status: 400,
+      },
+    );
   }
 
   if (!validateEmail(email)) {
-    return json({
-      errors: {
-        name: null,
-        email: "Invalid email",
-        password: null,
+    return json(
+      {
+        errors: {
+          name: null,
+          email: "Invalid email",
+          password: null,
+        },
       },
-    });
+      {
+        status: 400,
+      },
+    );
   }
 
   if (!validatePassword(password)) {
-    return json({
-      errors: {
-        name: null,
-        email: null,
-        password: "Password is required",
+    return json(
+      {
+        errors: {
+          name: null,
+          email: null,
+          password: "Password is required",
+        },
       },
-    });
+      {
+        status: 400,
+      },
+    );
   }
 
-  const url = new URL(request.url);
-  const redirectTo = url.searchParams.get("redirectTo") || "/";
-  throw redirect(redirectTo);
+  try {
+    await createUser(name, email, password);
+    const url = new URL(request.url);
+    const redirectTo = url.searchParams.get("redirectTo") || "/";
+    return redirect(`/signin?redirectTo=${encodeURIComponent(redirectTo)}`);
+  } catch (error) {
+    if (error instanceof AuthorizationError) {
+      return json(
+        {
+          errors: {
+            name: null,
+            email: error.message,
+            password: null,
+          },
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+    return json(
+      {
+        errors: {
+          name: null,
+          email: "Unable to create User. Please try again later",
+          password: null,
+        },
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 }
 
 export default function SignUp() {
@@ -114,7 +161,7 @@ export default function SignUp() {
                   autoComplete="name"
                 />
                 {nameError ? (
-                  <div className="text-red-700">{nameError}</div>
+                  <div className="text-red-700 font-semibold">{nameError}</div>
                 ) : null}
               </div>
               <div className="space-y-1">
@@ -129,7 +176,7 @@ export default function SignUp() {
                   autoComplete="email"
                 />
                 {emailError ? (
-                  <div className="text-red-700">{emailError}</div>
+                  <div className="text-red-700 font-semibold">{emailError}</div>
                 ) : null}
               </div>
               <div className="space-y-1">
@@ -144,7 +191,9 @@ export default function SignUp() {
                   autoComplete="current-password"
                 />
                 {passwordError ? (
-                  <div className="text-red-700">{passwordError}</div>
+                  <div className="text-red-700 font-semibold">
+                    {passwordError}
+                  </div>
                 ) : null}
               </div>
               <Button

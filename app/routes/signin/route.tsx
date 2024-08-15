@@ -1,17 +1,14 @@
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import {
-  ActionFunctionArgs,
-  json,
-  MetaFunction,
-  redirect,
-} from "@remix-run/node";
+import { ActionFunctionArgs, json, MetaFunction } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
 import loginImage from "~/assets/login-image.webp";
 
 import { Label } from "~/components/ui/label";
 import { validateEmail, validatePassword } from "~/utils/validations";
 import { useEffect, useRef } from "react";
+import { authenticator } from "~/auth/auth.server";
+import { AuthorizationError } from "remix-auth";
 
 export const meta: MetaFunction = () => {
   return [{ title: "bugbook" }, { name: "description", content: "bugbook!" }];
@@ -25,26 +22,68 @@ export async function action({ request }: ActionFunctionArgs) {
   const password = form.get("password");
 
   if (!validateEmail(email)) {
-    return json({
-      errors: {
-        email: "Invalid email",
-        password: null,
+    return json(
+      {
+        errors: {
+          email: "Invalid email",
+          password: null,
+        },
       },
-    });
+      {
+        status: 400,
+      },
+    );
   }
 
   if (!validatePassword(password)) {
-    return json({
-      errors: {
-        email: null,
-        password: "Password is required",
+    return json(
+      {
+        errors: {
+          email: null,
+          password: "Password is required",
+        },
       },
-    });
+      {
+        status: 400,
+      },
+    );
   }
 
-  const url = new URL(request.url);
-  const redirectTo = url.searchParams.get("redirectTo") || "/";
-  throw redirect(redirectTo);
+  try {
+    const url = new URL(request.url);
+    const redirectTo = url.searchParams.get("redirectTo") || "/";
+    return await authenticator.authenticate("form", request, {
+      successRedirect: redirectTo,
+      throwOnError: true,
+    });
+  } catch (error) {
+    if (error instanceof Response) {
+      return error;
+    } else if (error instanceof AuthorizationError) {
+      return json(
+        {
+          errors: {
+            email: error.message,
+            password: null,
+          },
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+    return json(
+      {
+        errors: {
+          email: "Something went wrong",
+          password: null,
+        },
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 }
 
 export async function loader() {
@@ -97,7 +136,7 @@ export default function Login() {
                   autoComplete="email"
                 />
                 {emailError ? (
-                  <div className="text-red-700">{emailError}</div>
+                  <div className="text-red-700 font-semibold">{emailError}</div>
                 ) : null}
               </div>
               <div className="space-y-1">
@@ -112,7 +151,9 @@ export default function Login() {
                   autoComplete="current-password"
                 />
                 {passwordError ? (
-                  <div className="text-red-700">{passwordError}</div>
+                  <div className="text-red-700 font-semibold">
+                    {passwordError}
+                  </div>
                 ) : null}
               </div>
               <Button
