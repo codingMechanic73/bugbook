@@ -7,6 +7,8 @@ import {
 } from "@remix-run/react";
 import PWABadge from "~/components/PWABadge";
 import { PWAAssets } from "~/components/PWAAssets";
+import { SpeedInsights } from "@vercel/speed-insights/remix";
+import { Analytics } from "@vercel/analytics/react";
 import "./tailwind.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -24,6 +26,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <ScrollRestoration />
         <Scripts />
         <PWABadge />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
