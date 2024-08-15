@@ -1,6 +1,11 @@
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { ActionFunctionArgs, json, MetaFunction } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  json,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
 import loginImage from "~/assets/login-image.webp";
 
@@ -29,9 +34,7 @@ export async function action({ request }: ActionFunctionArgs) {
           password: null,
         },
       },
-      {
-        status: 400,
-      },
+      { status: 400 },
     );
   }
 
@@ -43,9 +46,7 @@ export async function action({ request }: ActionFunctionArgs) {
           password: "Password is required",
         },
       },
-      {
-        status: 400,
-      },
+      { status: 400 },
     );
   }
 
@@ -67,9 +68,7 @@ export async function action({ request }: ActionFunctionArgs) {
             password: null,
           },
         },
-        {
-          status: 400,
-        },
+        { status: 400 },
       );
     }
     return json(
@@ -79,14 +78,17 @@ export async function action({ request }: ActionFunctionArgs) {
           password: null,
         },
       },
-      {
-        status: 500,
-      },
+      { status: 500 },
     );
   }
 }
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirectTo") || "/";
+  await authenticator.isAuthenticated(request, {
+    successRedirect: redirectTo,
+  });
   return null;
 }
 

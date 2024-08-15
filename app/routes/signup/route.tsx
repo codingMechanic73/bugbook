@@ -16,7 +16,7 @@ import {
   validatePassword,
 } from "~/utils/validations";
 import { useEffect, useRef } from "react";
-import { createUser } from "~/models/user.server";
+import { createUser, getUserByEmail } from "~/models/user.server";
 import { AuthorizationError } from "remix-auth";
 
 export const meta: MetaFunction = () => {
@@ -40,9 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
           password: null,
         },
       },
-      {
-        status: 400,
-      },
+      { status: 400 },
     );
   }
 
@@ -55,9 +53,7 @@ export async function action({ request }: ActionFunctionArgs) {
           password: null,
         },
       },
-      {
-        status: 400,
-      },
+      { status: 400 },
     );
   }
 
@@ -70,9 +66,21 @@ export async function action({ request }: ActionFunctionArgs) {
           password: "Password is required",
         },
       },
+      { status: 400 },
+    );
+  }
+
+  const exisingUser = await getUserByEmail(email);
+  if (exisingUser) {
+    return json(
       {
-        status: 400,
+        errors: {
+          name: null,
+          email: "A user already exists with this email",
+          password: null,
+        },
       },
+      { status: 400 },
     );
   }
 
@@ -91,9 +99,7 @@ export async function action({ request }: ActionFunctionArgs) {
             password: null,
           },
         },
-        {
-          status: 400,
-        },
+        { status: 400 },
       );
     }
     return json(
@@ -104,9 +110,7 @@ export async function action({ request }: ActionFunctionArgs) {
           password: null,
         },
       },
-      {
-        status: 500,
-      },
+      { status: 500 },
     );
   }
 }
