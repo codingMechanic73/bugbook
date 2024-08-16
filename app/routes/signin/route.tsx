@@ -12,8 +12,12 @@ import loginImage from "~/assets/login-image.webp";
 import { Label } from "~/components/ui/label";
 import { validateEmail, validatePassword } from "~/utils/validations";
 import { useEffect, useRef } from "react";
-import { authenticator } from "~/auth/auth.server";
+import {
+  authenticateAndLogin,
+  authenticateAndRedirect,
+} from "~/auth/auth.server";
 import { AuthorizationError } from "remix-auth";
+import { safeRedirect } from "~/lib/requestUtils";
 
 export const meta: MetaFunction = () => {
   return [{ title: "bugbook" }, { name: "description", content: "bugbook!" }];
@@ -51,12 +55,8 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    const url = new URL(request.url);
-    const redirectTo = url.searchParams.get("redirectTo") || "/";
-    return await authenticator.authenticate("form", request, {
-      successRedirect: redirectTo,
-      throwOnError: true,
-    });
+    const redirectTo = safeRedirect(request);
+    await authenticateAndLogin(request, redirectTo);
   } catch (error) {
     if (error instanceof Response) {
       return error;
@@ -84,11 +84,8 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const redirectTo = url.searchParams.get("redirectTo") || "/";
-  await authenticator.isAuthenticated(request, {
-    successRedirect: redirectTo,
-  });
+  const redirectTo = safeRedirect(request);
+  authenticateAndRedirect(request, redirectTo);
   return null;
 }
 

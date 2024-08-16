@@ -1,10 +1,11 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { authenticator } from "~/auth/auth.server";
+import { logoutAndRedirect } from "~/auth/auth.server";
+import { safeRedirect } from "~/lib/requestUtils";
 
 export async function action({ request }: ActionFunctionArgs) {
-  return authenticator.logout(request, {
-    redirectTo: "/signin",
-  });
+  const redirectTo = safeRedirect(request);
+  await logoutAndRedirect(request, redirectTo);
+  return;
 }
 
 export async function loader() {

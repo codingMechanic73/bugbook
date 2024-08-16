@@ -1,4 +1,5 @@
 import {
+  json,
   Links,
   Meta,
   Outlet,
@@ -10,6 +11,12 @@ import { PWAAssets } from "~/components/PWAAssets";
 import { SpeedInsights } from "@vercel/speed-insights/remix";
 import { Analytics } from "@vercel/analytics/react";
 import "./tailwind.css";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { getAuthenticatedUser } from "./auth/auth.server";
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  return json({ user: await getAuthenticatedUser(request) });
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
