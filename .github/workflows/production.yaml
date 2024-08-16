@@ -56,7 +56,8 @@ jobs:
       - name: Run Playwright tests
         run: pnpm test:e2e
         env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
+          PLAYWRIGHT_TEST_BASE_URL: "https://bugbook-beta.vercel.app"
+          # PLAYWRIGHT_TEST_BASE_URL: ${{ steps.deploy.outputs.deployment_url }}
 
       - uses: actions/upload-artifact@v4
         if: always()
