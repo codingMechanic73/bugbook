@@ -43,4 +43,5 @@ jobs:
       - name: Deploy Project Artifacts to Vercel
         run: |
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "DEPLOYMENT_URL=$DEPLOYMENT_URL"
           echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
