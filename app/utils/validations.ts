@@ -1,5 +1,9 @@
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const validateEmail = (email: unknown): email is string => {
-  return typeof email === "string" && email.length != 0 && email.includes("@");
+  return (
+    typeof email === "string" && email.length != 0 && emailRegex.test(email)
+  );
 };
 
 export const validatePassword = (password: unknown): password is string => {

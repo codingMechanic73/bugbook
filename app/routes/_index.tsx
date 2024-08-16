@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Form, Link } from "@remix-run/react";
+import { LoadingButton } from "~/components/custom-ui/loading-button";
 import { Button } from "~/components/ui/button";
 
 export const meta: MetaFunction = () => {
@@ -14,7 +15,9 @@ export default function Index() {
       </Link>
 
       <Form action="/logout" method="POST">
-        <Button type="submit">Logout</Button>
+        <LoadingButton loading={true} type="submit">
+          Logout
+        </LoadingButton>
       </Form>
     </main>
   );
