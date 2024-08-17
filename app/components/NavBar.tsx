@@ -7,11 +7,12 @@ import {
 } from "./ui/dropdown-menu";
 import { Link, useFetcher, useLocation } from "@remix-run/react";
 import { useOptionalUser } from "~/hooks/useOptionalUser";
-import { Button } from "./ui/button";
 import { LoadingButton } from "./custom-ui/loading-button";
 import { LinkButton } from "./custom-ui/link-button";
+import { cn } from "~/lib/utils";
+import UserAvatar from "./UserAvatar";
 
-const NavBar = () => {
+export default function NavBar() {
   const user = useOptionalUser();
 
   const fetcher = useFetcher();
@@ -28,13 +29,9 @@ const NavBar = () => {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  className={
-                    "w-[48px] font-bold text-white h-[48px] items-center justify-center flex rounded-full bg-primary"
-                  }
-                >
-                  {user?.name?.charAt(0)?.toUpperCase()}
-                </Button>
+                <button className={cn("flex-none rounded-full")}>
+                  <UserAvatar avatarUrl={undefined} size={40} />
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
@@ -67,6 +64,4 @@ const NavBar = () => {
       </div>
     </header>
   );
-};
-
-export { NavBar };
+}

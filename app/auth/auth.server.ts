@@ -36,3 +36,10 @@ export async function logoutAndRedirect(request: Request, redirectTo: string) {
     redirectTo,
   });
 }
+
+export async function protectWithSignIn(request: Request, redirectTo: string) {
+  await authenticator.isAuthenticated(request, {
+    failureRedirect: `/signin?redirectTo=${redirectTo}`,
+  });
+  return;
+}

@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
 import { prisma } from "~/database/db.server";
+import { randomUUID } from "crypto";
 
 export type AuthenticatedUserType = Omit<
   User,
@@ -14,6 +15,7 @@ export const createUser = async (
   return await prisma.user.create({
     data: {
       name,
+      username: `${name.replace(/\s/g, "_").toLowerCase()}${randomUUID()}`,
       email,
       hashedPassword: password,
     },

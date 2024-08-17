@@ -6,6 +6,10 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "remix vite:dev",
+    "postinstall": "prisma generate",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "db:migrate": "pnpm db:generate && prisma db push",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",

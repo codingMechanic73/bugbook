@@ -9,3 +9,7 @@ export const validatePassword = (password: unknown): password is string => {
 export const validateName = (name: unknown): name is string => {
   return typeof name === "string" && name.length != 0;
 };
+
+export const validatePostContent = (content: unknown): content is string => {
+  return typeof content === "string" && content.trim().length > 0;
+};
