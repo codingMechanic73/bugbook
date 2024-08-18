@@ -23,9 +23,10 @@ import Post from "./Post";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
-  const userId = user?.id || "clzxv9rfg00009shbkqkfxn35";
-  const posts = getPost(userId);
-  const usersToFollow = getUsersToFollow(userId);
+  const posts = getPost();
+  const usersToFollow = user?.id
+    ? getUsersToFollow(user.id)
+    : Promise.resolve([]);
   const trendingTopics = getTrendingTopics();
   return defer({ posts, usersToFollow, trendingTopics });
 }

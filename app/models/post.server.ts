@@ -13,9 +13,9 @@ export const createPost = async (content: string, userId: string) => {
   });
 };
 
-export const getPost = async (userId: string) => {
+export const getPost = async () => {
   return prisma.post.findMany({
-    include: getPostDataInclude(userId),
+    include: getPostDataInclude(),
     orderBy: { createdAt: "desc" },
     take: 10 + 1,
   });

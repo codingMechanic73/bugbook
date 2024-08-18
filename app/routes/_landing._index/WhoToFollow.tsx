@@ -37,11 +37,36 @@ interface WhoToFollowProps {
   userId?: string;
 }
 
+const FollowButton = ({
+  isFollowing,
+  userId,
+  followId,
+}: {
+  isFollowing: boolean;
+  userId?: string;
+  followId: string;
+}) => {
+  const fetcher = useFetcher();
+  isFollowing =
+    fetcher.formData?.get("actionType") === "followAction" ? true : isFollowing;
+  return (
+    <fetcher.Form method="POST">
+      <input type="hidden" name="followId" value={followId} />
+      <Button
+        name="actionType"
+        value={isFollowing ? "unfollowAction" : "followAction"}
+        disabled={!userId}
+      >
+        {isFollowing ? "Unfollow" : "Follow"}
+      </Button>
+    </fetcher.Form>
+  );
+};
+
 export default function WhoToFollow({
   usersToFollow,
   userId,
 }: WhoToFollowProps) {
-  const fetcher = useFetcher();
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
       <div className="text-xl font-bold">Who to follow</div>
@@ -54,50 +79,39 @@ export default function WhoToFollow({
       >
         <Await resolve={usersToFollow}>
           {(usersToFollow) =>
-            usersToFollow.map((user) => (
-              <div
-                key={user.id}
-                className="flex items-center justify-between gap-3"
-              >
-                <Link
-                  to={`/users/${user.username}`}
-                  className="flex items-center gap-3"
+            usersToFollow.map((user) => {
+              return (
+                <div
+                  key={user.id}
+                  className="flex items-center justify-between gap-3"
                 >
-                  <UserAvatar
-                    avatarUrl={user.avatarUrl}
-                    className="flex-none"
-                  />
-                  <div>
-                    <p className="line-clamp-1 break-all font-semibold hover:underline">
-                      {user.name}
-                    </p>
-                    <p className="line-clamp-1 break-all text-muted-foreground">
-                      @{user.username}
-                    </p>
-                  </div>
-                </Link>
-                <fetcher.Form method="POST">
-                  <input type="hidden" name="followId" value={user.id} />
-                  <Button
-                    name="actionType"
-                    value={
-                      !user.followers.some(
-                        ({ followerId }) => followerId === userId,
-                      )
-                        ? "followAction"
-                        : "unfollowAction"
-                    }
-                    disabled={!userId}
+                  <Link
+                    to={`/users/${user.username}`}
+                    className="flex items-center gap-3"
                   >
-                    {!user.followers.some(
+                    <UserAvatar
+                      avatarUrl={user.avatarUrl}
+                      className="flex-none"
+                    />
+                    <div>
+                      <p className="line-clamp-1 break-all font-semibold hover:underline">
+                        {user.name}
+                      </p>
+                      <p className="line-clamp-1 break-all text-muted-foreground">
+                        @{user.username}
+                      </p>
+                    </div>
+                  </Link>
+                  <FollowButton
+                    isFollowing={user.followers.some(
                       ({ followerId }) => followerId === userId,
-                    )
-                      ? "Follow"
-                      : "Un Follow"}
-                  </Button>
-                </fetcher.Form>
-              </div>
-            ))
+                    )}
+                    userId={userId}
+                    followId={user.id}
+                  />
+                </div>
+              );
+            })
           }
         </Await>
       </Suspense>

@@ -1,5 +1,14 @@
 import { Prisma } from "@prisma/client";
 
+export function getUserDataForPostSelect() {
+  return {
+    id: true,
+    username: true,
+    name: true,
+    avatarUrl: true,
+  };
+}
+
 export function getUserDataSelect(loggedInUserId: string) {
   return {
     id: true,
@@ -22,10 +31,10 @@ export function getUserDataSelect(loggedInUserId: string) {
   } satisfies Prisma.UserSelect;
 }
 
-export function getPostDataInclude(loggedInUserId: string) {
+export function getPostDataInclude() {
   return {
     user: {
-      select: getUserDataSelect(loggedInUserId),
+      select: getUserDataForPostSelect(),
     },
   } satisfies Prisma.PostInclude;
 }

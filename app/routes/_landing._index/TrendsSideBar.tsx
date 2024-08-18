@@ -32,7 +32,9 @@ export default function TrendsSidebar({
 }: TrendsSideBarProps) {
   return (
     <div className="sticky top-[5.25rem] hidden h-fit w-72 flex-none space-y-5 md:block lg:w-80">
-      <WhoToFollow usersToFollow={usersToFollow} userId={userId} />
+      {userId ? (
+        <WhoToFollow usersToFollow={usersToFollow} userId={userId} />
+      ) : null}
       <TrendingTopics trendingTopics={trendingTopics} />
     </div>
   );
