@@ -24,6 +24,8 @@ export default function PostEditor() {
       </div>
       <div className="flex justify-end">
         <Button
+          name="actionType"
+          value={"createAction"}
           type="submit"
           disabled={fetcher.state === "submitting"}
           className="min-w-20"

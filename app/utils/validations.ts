@@ -13,3 +13,7 @@ export const validateName = (name: unknown): name is string => {
 export const validatePostContent = (content: unknown): content is string => {
   return typeof content === "string" && content.trim().length > 0;
 };
+
+export const validStringId = (id: unknown): id is string => {
+  return typeof id === "string" && id.length > 0;
+};
