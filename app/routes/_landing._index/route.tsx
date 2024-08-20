@@ -1,5 +1,5 @@
 import { useOptionalUser } from "~/hooks/useOptionalUser";
-import PostEditor from "./PostEditor";
+import PostEditor from "~/routes/_landing._index/PostEditor";
 import { getPost, getTrendingTopics } from "~/models/post.server";
 import { Await, useLoaderData } from "@remix-run/react";
 import {
@@ -19,7 +19,7 @@ import {
   handleFollowAction,
   handleUnfollowAction,
 } from "./_postActions";
-import Post from "../../components/post/Post";
+import Post from "~/components/post/Post";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
