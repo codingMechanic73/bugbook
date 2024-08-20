@@ -1,6 +1,6 @@
 import { Post as PostType } from "@prisma/client";
 import { prisma } from "~/database/db.server";
-import { getPostDataInclude } from "~/lib/types";
+import { getPostDataInclude, getPostDataIncludeByUser } from "~/lib/types";
 
 export type { PostType };
 
@@ -16,6 +16,15 @@ export const createPost = async (content: string, userId: string) => {
 export const getPost = async () => {
   return prisma.post.findMany({
     include: getPostDataInclude(),
+    orderBy: { createdAt: "desc" },
+    take: 10 + 1,
+  });
+};
+
+export const getPostByUser = async (userId: string) => {
+  return prisma.post.findMany({
+    include: getPostDataIncludeByUser(userId),
+    where: { userId },
     orderBy: { createdAt: "desc" },
     take: 10 + 1,
   });

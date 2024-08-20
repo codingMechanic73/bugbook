@@ -39,6 +39,14 @@ export function getPostDataInclude() {
   } satisfies Prisma.PostInclude;
 }
 
+export function getPostDataIncludeByUser(loggedInUserId: string) {
+  return {
+    user: {
+      select: getUserDataSelect(loggedInUserId),
+    },
+  } satisfies Prisma.PostInclude;
+}
+
 export type PostData = Omit<
   Prisma.PostGetPayload<{
     include: ReturnType<typeof getPostDataInclude>;
@@ -48,7 +56,7 @@ export type PostData = Omit<
 
 export type UserToFollowData = Omit<
   Prisma.UserGetPayload<{ include: ReturnType<typeof getUserDataSelect> }>,
-  "createdAt" | "updatedAt"
+  "createdAt" | "updatedAt" | "hashedPassword" | "email"
 >;
 
 export interface PostsPage {

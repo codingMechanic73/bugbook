@@ -27,6 +27,10 @@ export const getUserByEmail = async (email: User["email"]) => {
   return await prisma.user.findFirst({ where: { email } });
 };
 
+export const getUserByUsername = async (username: User["username"]) => {
+  return await prisma.user.findFirst({ where: { username } });
+};
+
 export const getUsersToFollow = async (userId: string) => {
   return prisma.user.findMany({
     where: {
@@ -69,5 +73,17 @@ export const unFollowUser = async (
       followerId: userId,
       followingId: userIdToUnfollow,
     },
+  });
+};
+
+export const getUser = async (userId: string) => {
+  return await prisma.user.findFirst({
+    where: {
+      id: {
+        equals: userId,
+        mode: "insensitive",
+      },
+    },
+    select: getUserDataSelect(userId),
   });
 };

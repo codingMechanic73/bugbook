@@ -2,6 +2,7 @@ import { Link } from "@remix-run/react";
 import UserAvatar from "~/components/UserAvatar";
 import PostMoreButton from "./PostMoreButton";
 import { PostData } from "~/lib/types";
+import Linkify from "~/components/Linkify";
 
 interface PostProps {
   post: PostData;
@@ -36,7 +37,9 @@ export default function Post({ post, userId }: PostProps) {
           />
         )}
       </div>
-      <div className="whitespace-pre-line break-words">{post.content}</div>
+      <Linkify>
+        <div className="whitespace-pre-line break-words">{post.content}</div>
+      </Linkify>
     </article>
   );
 }

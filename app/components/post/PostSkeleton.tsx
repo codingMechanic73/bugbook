@@ -1,6 +1,6 @@
 import { getRandomNumber } from "~/lib/mathUtils";
-import { Skeleton } from "./ui/skeleton";
-import UserAvatar from "./UserAvatar";
+import { Skeleton } from "../ui/skeleton";
+import UserAvatar from "../UserAvatar";
 
 export default function PostSkeleton() {
   return (

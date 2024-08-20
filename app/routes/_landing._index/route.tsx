@@ -12,14 +12,14 @@ import { Suspense } from "react";
 import { getAuthenticatedUser } from "~/auth/auth.server";
 import TrendsSidebar from "~/routes/_landing._index/TrendsSideBar";
 import { getUsersToFollow } from "~/models/user.server";
-import PostSkeleton from "~/components/PostSkeleton";
+import PostSkeleton from "~/components/post/PostSkeleton";
 import {
   handleCreateAction,
   handleDeleteAction,
   handleFollowAction,
   handleUnfollowAction,
 } from "./_postActions";
-import Post from "./Post";
+import Post from "../../components/post/Post";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
