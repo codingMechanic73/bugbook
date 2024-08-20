@@ -1,5 +1,4 @@
 import { useOptionalUser } from "~/hooks/useOptionalUser";
-import PostEditor from "~/routes/_landing._index/PostEditor";
 import { getPost, getTrendingTopics } from "~/models/post.server";
 import { Await, useLoaderData } from "@remix-run/react";
 import {
@@ -20,6 +19,7 @@ import {
   handleUnfollowAction,
 } from "./_postActions";
 import Post from "~/components/post/Post";
+// import { PostEditor } from "./PostEditor";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getAuthenticatedUser(request);
@@ -61,7 +61,7 @@ export default function Posts() {
   return (
     <main className="w-full min-w-0 flex gap-5">
       <div className="w-full min-w-0 space-y-5">
-        {user && <PostEditor />}
+        {/* {user && <PostEditor />} */}
         <Suspense
           fallback={Array.from({ length: 5 }).map((_, index) => (
             <PostSkeleton key={index} />

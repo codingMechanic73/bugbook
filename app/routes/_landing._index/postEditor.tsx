@@ -5,7 +5,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { useOptionalUser } from "~/hooks/useOptionalUser";
 import { action } from "../logout";
 
-export default function PostEditor() {
+const PostEditor = () => {
   const user = useOptionalUser();
   const fetcher = useFetcher<typeof action>();
 
@@ -35,4 +35,6 @@ export default function PostEditor() {
       </div>
     </fetcher.Form>
   );
-}
+};
+
+export { PostEditor };
