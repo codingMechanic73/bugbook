@@ -5,12 +5,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Link, useFetcher, useLocation } from "@remix-run/react";
+import { Link, useFetcher, useLocation, useNavigation } from "@remix-run/react";
 import { useOptionalUser } from "~/hooks/useOptionalUser";
 import { LoadingButton } from "./custom-ui/loading-button";
 import { LinkButton } from "./custom-ui/link-button";
 import { cn } from "~/lib/utils";
 import UserAvatar from "./UserAvatar";
+import { Progress } from "./ui/progress";
+import { useState, useEffect } from "react";
 
 export default function NavBar() {
   const user = useOptionalUser();
@@ -18,6 +20,25 @@ export default function NavBar() {
   const fetcher = useFetcher();
   const location = useLocation();
   const currentPath = location.pathname;
+
+  const navigation = useNavigation();
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    if (navigation.state === "loading" || navigation.state === "submitting") {
+      interval = setInterval(() => {
+        setProgress((prev) => (prev < 100 ? prev + 20 : 100));
+      }, 150);
+    } else if (navigation.state === "idle") {
+      setProgress(0);
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [navigation.state]);
 
   return (
     <header className="sticky top-0 z-10 bg-card shadow-sm">
@@ -62,6 +83,11 @@ export default function NavBar() {
           )}
         </div>
       </div>
+      {navigation.state !== "idle" ? (
+        <Progress value={progress} className="h-1" />
+      ) : (
+        <div className="h-1"></div>
+      )}
     </header>
   );
 }
